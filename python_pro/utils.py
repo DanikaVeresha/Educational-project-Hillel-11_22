@@ -89,8 +89,8 @@ def get_pb_exchange_rate(convert_currency: str,
                             return f'There is no exchange rate PB for {convert_currency}'
                     else:
                         return f'Your format date is not correct {rate_date}'
-        elif rate_date == '01-11-2022':
-            special_haracter = '-'
+        elif rate_date == '01112022':
+            special_haracter = ''
             if special_haracter in rate_date:
                 rates = json['exchangeRate']
                 for rate in rates:
