@@ -60,49 +60,27 @@ def get_pb_exchange_rate(convert_currency: str,
         for rate in rates:
             if rate['currency'] == convert_currency:
                 if bank == 'NBU' or bank == 'nbu':
-                    try:
-                        sale_rate = rate['saleRateNB']
-                        purchase_rate = rate['purchaseRateNB']
-                        return f'Exchange rate UAH to {convert_currency} for {rate_date} at {bank}: sale={sale_rate}, purchase={purchase_rate}'
-                    except:
-                        return f'There is no exchange rate NBU for {convert_currency}'
+                    if rate_date == '01-11-2022':
+                        delimiter = '-'
+                        delimiter_new = '.'
+                        output_str = rate_date.replace(delimiter, delimiter_new)
+                        try:
+                            sale_rate = rate['saleRateNB']
+                            purchase_rate = rate['purchaseRateNB']
+                            return f'Exchange rate UAH to {convert_currency} for {output_str} at {bank}: sale={sale_rate}, purchase={purchase_rate}'
+                        except:
+                            return f'There is no exchange rate NBU for {convert_currency}'
                 elif bank == 'PB' or bank == 'pb' or bank == 'Privatbank' or bank == 'PrivatBank':
-                    try:
-                        sale_rate = rate['saleRate']
-                        purchase_rate = rate['purchaseRate']
-                        return f'Exchange rate UAH to {convert_currency} for {rate_date} at {bank}: sale={sale_rate}, purchase={purchase_rate}'
-                    except:
-                        return f'There is no exchange rate PB for {convert_currency}'
-    elif response.status_code == 200:
-        rate_date = json['date']
-        if rate_date == '01-11-2022':
-            special_haracter = '-'
-            if special_haracter in rate_date:
-                rates = json['exchangeRate']
-                for rate in rates:
-                    if rate['currency'] == convert_currency:
+                    if rate_date == '01-11-2022':
+                        delimiter = '-'
+                        delimiter_new = '.'
+                        output_str = rate_date.replace(delimiter, delimiter_new)
                         try:
-                            sale_rate = rate['saleRateNB']
-                            purchase_rate = rate['purchaseRateNB']
-                            return f'Exchange rate UAH to {convert_currency} for {rate_date} at {bank}: sale={sale_rate}, purchase={purchase_rate}'
+                            sale_rate = rate['saleRate']
+                            purchase_rate = rate['purchaseRate']
+                            return f'Exchange rate UAH to {convert_currency} for {output_str} at {bank}: sale={sale_rate}, purchase={purchase_rate}'
                         except:
                             return f'There is no exchange rate PB for {convert_currency}'
-                    else:
-                        return f'Your format date is not correct {rate_date}'
-        elif rate_date == '01112022':
-            special_haracter = ''
-            if special_haracter in rate_date:
-                rates = json['exchangeRate']
-                for rate in rates:
-                    if rate['currency'] == convert_currency:
-                        try:
-                            sale_rate = rate['saleRateNB']
-                            purchase_rate = rate['purchaseRateNB']
-                            return f'Exchange rate UAH to {convert_currency} for {rate_date} at {bank}: sale={sale_rate}, purchase={purchase_rate}'
-                        except:
-                            return f'There is no exchange rate PB for {convert_currency}'
-                    else:
-                        return f'Your format date is not correct {rate_date}'
     else:
         return f'Error {response.status_code}'
 
