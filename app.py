@@ -3,7 +3,6 @@ from flask import request, render_template
 from function import DBManager
 
 
-
 app = Flask(__name__, static_folder="static")
 
 
@@ -40,7 +39,7 @@ def currency_convert():
         user_currency_1 = request.form['currency_1']
         user_currency_2 = request.form['currency_2']
         user_date = request.form['date']
-        with DBManager as db:
+        with DBManager() as db:
             buy_rate_1, sale_rate_1 = db.get.result(f'SELECT buy_rate, sale_rate FROM currency_pair WHERE bank = "{user_bank}" and date = "{user_date}" and currency ="{user_currency_1}"')
             buy_rate_2, sale_rate_2 = db.get.result(f'SELECT buy_rate, sale_rate FROM currency_pair WHERE bank = "{user_bank}" and date = "{user_date}" and currency ="{user_currency_2}"')
         operation_buy = buy_rate_2 / buy_rate_1
