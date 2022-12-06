@@ -1,7 +1,7 @@
 import sqlite3
 
 
-def context_manager():
+def write_new_data():
     with sqlite3.connect('currency_pair.db') as db:
         cursor = db.cursor()
         bank = 'OTPbank'
@@ -14,4 +14,4 @@ def context_manager():
         db.commit()
 
 
-context_manager()
+write_new_data()

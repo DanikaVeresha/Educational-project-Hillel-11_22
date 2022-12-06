@@ -7,7 +7,7 @@ class DBManager:
         self.cursor = self.con.cursor()
         return self
 
-    def __exit__(self):
+    def __exit__(self, exc_type, exc_value, exc_tb):
         self.cursor.close()
         self.con.close()
 
