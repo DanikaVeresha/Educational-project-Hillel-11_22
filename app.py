@@ -39,11 +39,8 @@ def currency_convert():
         user_currency_1 = request.form['currency_1']
         user_currency_2 = request.form['currency_2']
         user_date = request.form['date']
-        # with DBManager() as db:
-        #     buy_rate_1, sale_rate_1 = db.get.result(f'SELECT buy_rate, sale_rate FROM currency_pair WHERE bank = "{user_bank}" and date = "{user_date}" and currency ="{user_currency_1}"')
-        #     buy_rate_2, sale_rate_2 = db.get.result(f'SELECT buy_rate, sale_rate FROM currency_pair WHERE bank = "{user_bank}" and date = "{user_date}" and currency ="{user_currency_2}"')
-        with DataConn() as con:
-            cursor = con.cursor()
+        with DataConn() as db:
+            cursor = db.cursor()
             res_1 = cursor.execute(f'SELECT buy_rate, sale_rate FROM currency_pair WHERE bank = "{user_bank}" and date = "{user_date}" and currency ="{user_currency_1}"')
             buy_rate_1, sale_rate_1 = res_1.fetchone()
             res_2 = cursor.execute(f'SELECT buy_rate, sale_rate FROM currency_pair WHERE bank = "{user_bank}" and date = "{user_date}" and currency ="{user_currency_2}"')
@@ -51,7 +48,6 @@ def currency_convert():
             cursor.close()
         operation_buy = buy_rate_2 / buy_rate_1
         operation_sale = sale_rate_2 / sale_rate_1
-
         return render_template('data_form.html',
                                operation_buy=round(operation_buy, 2),
                                operation_sale=round(operation_sale, 2),
