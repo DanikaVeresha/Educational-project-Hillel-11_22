@@ -1,7 +1,6 @@
 from flask import Flask
 from flask import request, render_template
-# from function import DBManager
-from function import DataConn
+from db_context_manager import DataBase
 
 app = Flask(__name__, static_folder="static")
 
@@ -39,7 +38,7 @@ def currency_convert():
         user_currency_1 = request.form['currency_1']
         user_currency_2 = request.form['currency_2']
         user_date = request.form['date']
-        with DataConn() as db:
+        with DataBase() as db:
             cursor = db.cursor()
             res_1 = cursor.execute(f'SELECT buy_rate, sale_rate FROM currency_pair WHERE bank = "{user_bank}" and date = "{user_date}" and currency ="{user_currency_1}"')
             buy_rate_1, sale_rate_1 = res_1.fetchone()
