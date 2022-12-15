@@ -1,6 +1,7 @@
 from flask import Flask
 from flask import request, render_template
 from db_context_manager import DataBase
+from tasks import add
 
 app = Flask(__name__, static_folder="static")
 
@@ -15,6 +16,7 @@ def login_user():
 
 @app.route('/logout', methods=['GET'])
 def logout_user():
+    add.apply_async(args=(1, 2))
     return 'logout_user'
 
 
@@ -45,6 +47,7 @@ def currency_convert():
             res_2 = cursor.execute(f'SELECT buy_rate, sale_rate FROM currency_pair WHERE bank = "{user_bank}" and date = "{user_date}" and currency ="{user_currency_2}"')
             buy_rate_2, sale_rate_2 = res_2.fetchone()
             cursor.close()
+
         operation_buy = buy_rate_2 / buy_rate_1
         operation_sale = sale_rate_2 / sale_rate_1
         return render_template('data_form.html',
