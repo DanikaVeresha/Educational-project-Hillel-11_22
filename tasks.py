@@ -1,11 +1,11 @@
-import datetime
+from flask import Flask
 from celery import Celery
 
-app = Celery('tasks', broker='pyamqp://guest@localhost//')
+app = Flask(__name__)
 
-@app.task
-def add(x, y):
-    print(x + y)
-    with open('test.csv', 'w') as f:
-        f.write(f'x + y = {x + y} {datetime.datetime.now()}')
-    return x + y
+app.config['CELERY_BROKER_URL'] = 'redis://localhost:6379/0'
+app.config['CELERY_RESULT_BACKEND'] = 'redis://localhost:6379/0'
+
+
+celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
+celery.conf.update(app.config)
