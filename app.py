@@ -1,7 +1,7 @@
 from flask import Flask
 from flask import request, render_template
 from db_context_manager import DataBase
-import datetime
+from tasks import add
 
 app = Flask(__name__, static_folder="static")
 
@@ -16,11 +16,8 @@ def login_user():
 
 @app.route('/logout', methods=['GET'])
 def logout_user():
-    a = 4
-    b = 6
-    with open('celery.csv', 'w') as f:
-        f.write(f'hello, {a + b} {datetime.datetime.now()}')
-    return f'hello, {a + b} {datetime.datetime.now()}'
+    add.apply_async(args=(75.7659, 25.7845))
+    return f'Operation done / logout'
 
 
 @app.route('/register', methods=['GET', 'POST'])
