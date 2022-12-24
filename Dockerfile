@@ -1,5 +1,3 @@
-# syntax=docker/dockerfile:1
-
 FROM python:3.11
 
 WORKDIR /rate_app
@@ -9,4 +7,3 @@ RUN pip3 install -r requirements.txt
 
 COPY . .
 
-CMD [ "python3", "app.py"]
