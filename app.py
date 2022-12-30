@@ -2,6 +2,9 @@ from flask import Flask
 from flask import request, render_template
 from db_context_manager import DataBase
 from tasks import add
+import all_db
+import models_db
+from sqlalchemy import select
 
 app = Flask(__name__, static_folder="static")
 
@@ -9,9 +12,13 @@ app = Flask(__name__, static_folder="static")
 @app.route('/login', methods=['GET', 'POST'])
 def login_user():
     if request.method == 'GET':
-        return 'login_user GET/login'
+        conn = all_db.engine.connect()
+        result = conn.execute(select([models_db.User]))
+        data_res = result.fetchall()
+        print(data_res)
+        return f'Operation done / login / {data_res}'
     else:
-        return 'login_user POST/login'
+        return 'login_user POST/login' 
 
 
 @app.route('/logout', methods=['GET'])
