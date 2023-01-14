@@ -9,6 +9,9 @@ services:
       - rabbitmq_container
     environment:
       - RABBIT_HOST=rabbitmq_container
+      - DB_HOST=pg_db_container
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
   rabbitmq_container:
     image: "rabbitmq:3.8.9-management"
     ports:
@@ -22,6 +25,9 @@ services:
       - rabbitmq_container
     environment:
       - RABBIT_HOST=rabbitmq_container
+      - DB_HOST=pg_db_container
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
   beat_tasks:
     build: .
     command: celery -A tasks beat --loglevel=info
@@ -29,3 +35,15 @@ services:
       - rabbitmq_container
     environment:
       - RABBIT_HOST=rabbitmq_container
+      - DB_HOST=pg_db_container
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+  db:
+    image: postgres:14.1-alpine
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - '5432:5432'
+    hostname: pg_db_container
+

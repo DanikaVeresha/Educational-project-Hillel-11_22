@@ -3,7 +3,7 @@ from all_db import Base
 
 
 class User(Base):
-    __tablename__ = 'currency_pair'
+    __tablename__ = "currency_pair"
     id = Column(Integer, primary_key=True, unique=True)
     bank = Column(String(50))
     currency = Column(String(120))
@@ -20,3 +20,4 @@ class User(Base):
 
     def __repr__(self):
         return f'<User {self.name!r}>'
+
