@@ -1,7 +1,7 @@
 from flask import Flask
 from flask import request, render_template
 from db_context_manager import DataBase
-from tasks import add
+from tasks import get_bank_tasks
 import all_db
 import models_db
 from sqlalchemy import select
@@ -13,13 +13,6 @@ app = Flask(__name__, static_folder="static")
 @app.route('/login', methods=['GET', 'POST'])
 def login_user():
     if request.method == 'GET':
-        # conn = all_db.engine.connect()
-        # result = conn.execute(select([models_db.User]))
-        # data_res = result.fetchall()
-        # record_1 = models_db.User(bank="D@bank", currency="UAH", date="2022-12-01", buy_rate=21.5, sale_rate=20.5)
-        # with Session(all_db.engine) as session:
-        #     session.add(record_1)
-        #     session.commit()
         with Session(all_db.engine) as session:
             query = select(models_db.User)
             result = session.execute(query).fetchall()
@@ -30,7 +23,7 @@ def login_user():
 
 @app.route('/logout', methods=['GET'])
 def logout_user():
-    add.apply_async(args=(75.7659, 25.7845))
+    get_bank_tasks.apply_async()
     return f'Operation done / logout / OK'
 
 
