@@ -4,7 +4,7 @@ from db_context_manager import DataBase
 from tasks import get_bank_tasks
 import all_db
 import models_db
-from sqlalchemy import select
+from sqlalchemy import select, insert
 from sqlalchemy.orm import Session
 
 app = Flask(__name__, static_folder="static")
@@ -13,12 +13,9 @@ app = Flask(__name__, static_folder="static")
 @app.route('/login', methods=['GET', 'POST'])
 def login_user():
     if request.method == 'GET':
-        with Session(all_db.engine) as session:
-            query = select(models_db.User)
-            result = session.execute(query).fetchall()
-        return str(result)
+        return render_template('user_form.html')
     else:
-        return f'login_user POST/ login /'
+        return 'hello user'
 
 
 @app.route('/logout', methods=['GET'])
@@ -29,10 +26,30 @@ def logout_user():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register_user():
-    if request.method == 'GET':
-        return 'register_user GET/register'
+    if request.method == 'POST':
+        with Session(all_db.engine) as session:
+            record = models_db.Users(username=request.form['username'],
+                                     password=request.form['password'],
+                                     email=request.form['email'])
+            session.add(record)
+            session.commit()
+        user_name = request.form['username']
+        user_password = request.form['password']
+        user_email = request.form['email']
+        with Session(all_db.engine) as session:
+            statement1 = select(models_db.Users).filter_by(username=user_name,
+                                                           password=user_password,
+                                                           email=user_email)
+            first_user = session.scalars(statement1).first()
+            username, password, email = first_user.username, first_user.password, first_user.email
+        firstuser = username, password, email
+        if username == request.form['username'] and password == request.form['password']:
+            return render_template('user_form.html',
+                                   firstuser=firstuser)
+        else:
+            return 'Sorry, this user is not in our database'
     else:
-        return 'register_user POST/register'
+        return render_template('user_form.html')
 
 
 @app.route('/user_page', methods=['GET'])
@@ -71,7 +88,6 @@ def currency_convert():
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000, debug=True)
-
 
 
 
