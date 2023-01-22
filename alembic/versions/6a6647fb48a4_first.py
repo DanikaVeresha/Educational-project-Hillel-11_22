@@ -45,3 +45,4 @@ def downgrade() -> None:
     op.drop_table('currency_pair')
     # ### end Alembic commands ###
 
+

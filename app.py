@@ -12,10 +12,24 @@ app = Flask(__name__, static_folder="static")
 
 @app.route('/login', methods=['GET', 'POST'])
 def login_user():
-    if request.method == 'GET':
-        return render_template('user_form.html')
+    if request.method == 'POST':
+        try:
+            user_name = request.form['username']
+            user_password = request.form['password']
+            user_email = request.form['email']
+            with Session(all_db.engine) as session:
+                statement1 = select(models_db.Users).filter_by(username=user_name,
+                                                               password=user_password,
+                                                               email=user_email)
+                first_user = session.scalars(statement1).first()
+                username, password, email = first_user.username, first_user.password, first_user.email
+            firstuser = username, password, email
+            return render_template('user_login_form.html',
+                                   firstuser=firstuser)
+        except AttributeError:
+            return 'Sorry, this user is not in our database'
     else:
-        return 'hello user'
+        return render_template('user_login_form.html')
 
 
 @app.route('/logout', methods=['GET'])
@@ -43,11 +57,8 @@ def register_user():
             first_user = session.scalars(statement1).first()
             username, password, email = first_user.username, first_user.password, first_user.email
         firstuser = username, password, email
-        if username == request.form['username'] and password == request.form['password']:
-            return render_template('user_form.html',
-                                   firstuser=firstuser)
-        else:
-            return 'Sorry, this user is not in our database'
+        return render_template('user_form.html',
+                               firstuser=firstuser)
     else:
         return render_template('user_form.html')
 
