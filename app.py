@@ -24,12 +24,12 @@ def login_user():
                 first_user = session.scalars(statement1).first()
                 username, password, email = first_user.username, first_user.password, first_user.email
             firstuser = username, password, email
-            return render_template('user_login_form.html',
+            return render_template('userpost_login_form.html',
                                    firstuser=firstuser)
         except AttributeError:
             return 'Sorry, this user is not in our database'
     else:
-        return render_template('user_login_form.html')
+        return render_template('userget_login_form.html')
 
 
 @app.route('/logout', methods=['GET'])
@@ -57,10 +57,10 @@ def register_user():
             first_user = session.scalars(statement1).first()
             username, password, email = first_user.username, first_user.password, first_user.email
         firstuser = username, password, email
-        return render_template('user_form.html',
+        return render_template('userpost_form.html',
                                firstuser=firstuser)
     else:
-        return render_template('user_form.html')
+        return render_template('userget_form.html')
 
 
 @app.route('/user_page', methods=['GET'])
