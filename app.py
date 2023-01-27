@@ -1,13 +1,18 @@
 from flask import Flask
 from flask import request, render_template
 from db_context_manager import DataBase
-from tasks import get_bank_tasks
+from tasks import get_bank_task
 import all_db
 import models_db
-from sqlalchemy import select, insert
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+# from flask.ext.session import Session as FlaskSession
+from flask import session as flask_session
+
+
 app = Flask(__name__, static_folder="static")
+app.secret_key = 'secret_key'
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -24,18 +29,31 @@ def login_user():
                 first_user = session.scalars(statement1).first()
                 username, password, email = first_user.username, first_user.password, first_user.email
             firstuser = username, password, email
-            return render_template('userpost_login_form.html',
-                                   firstuser=firstuser)
+            if firstuser:
+                return render_template('login_form.html',
+                                       firstuser=firstuser)
         except AttributeError:
-            return 'Sorry, this user is not in our database'
+            return render_template('login_form.html',
+                                   firstuser='No user found')
     else:
-        return render_template('userget_login_form.html')
+        if 'username' in flask_session:
+            return render_template('login_form.html',
+                                   firstuser=flask_session['username'])
+        return 'Hello, you are logged out as an unknown user, please first register in our database'
 
 
 @app.route('/logout', methods=['GET'])
 def logout_user():
-    get_bank_tasks.apply_async()
-    return f'Operation done / logout / OK'
+    get_bank_task()
+    if 'username' in flask_session:
+        return 'Operation done'
+    return 'Hello, you are logged out as an unknown user, please first register in our database'
+
+
+@app.route('/ok', methods=['GET'])
+def ok_user():
+    flask_session.pop('username', None)
+    return f'Operation done'
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -47,25 +65,25 @@ def register_user():
                                      email=request.form['email'])
             session.add(record)
             session.commit()
-        user_name = request.form['username']
-        user_password = request.form['password']
-        user_email = request.form['email']
         with Session(all_db.engine) as session:
-            statement1 = select(models_db.Users).filter_by(username=user_name,
-                                                           password=user_password,
-                                                           email=user_email)
-            first_user = session.scalars(statement1).first()
-            username, password, email = first_user.username, first_user.password, first_user.email
-        firstuser = username, password, email
-        return render_template('userpost_form.html',
-                               firstuser=firstuser)
+            query = select(models_db.Users).filter(models_db.Users.username == request.form['username'],
+                                                   models_db.Users.password == request.form['password'],
+                                                   models_db.Users.email == request.form['email'])
+            result = session.execute(query).fetchall()
+            if result:
+                flask_session['username'] = request.form['username']
+            else:
+                return render_template('index.html', username='No user found')
+            return render_template('index.html', username=flask_session['username'])
     else:
-        return render_template('userget_form.html')
+        return render_template('register_form.html')
 
 
 @app.route('/user_page', methods=['GET'])
-def user_page():
-    return 'user_page'
+def index():
+    if 'username' in flask_session:
+        return f'Logged in as {flask_session["username"]}'
+    return 'You are not logged in'
 
 
 @app.route('/currency', methods=['GET', 'POST'])
@@ -92,9 +110,13 @@ def currency_convert():
                                operation_buy=round(operation_buy, 2),
                                operation_sale=round(operation_sale, 2),
                                user_currency_1=user_currency_1,
-                               user_currency_2=user_currency_2)
+                               user_currency_2=user_currency_2,
+                               username=flask_session['username'])
     else:
-        return render_template('data_form.html')
+        if 'username' in flask_session:
+            return render_template('data_form.html',
+                                   username=flask_session['username'])
+        return 'Hello, you are logged out as an unknown user, please first register in our database'
 
 
 if __name__ == "__main__":

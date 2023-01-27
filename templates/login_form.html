@@ -5,9 +5,18 @@
     <title>Title</title>
 </head>
 <body>
+Hello {{ username }}
+
+{% if operation_buy %}
+{{ user_currency_1 }} in {{ user_currency_2 }}: {{operation_buy}} for buy, {{operation_sale}} for sale
+{% endif %}
+
+{% if firstuser %}
+User: {{ firstuser }} |
+{% endif %}
 <br>
 <br>
-<form action="/register" method="post">
+<form action="/login" method="post">
   User_name:<br>
   <input type="text" name="username"><br>
   User_password:<br>
@@ -20,3 +29,4 @@
 </form>
 </body>
 </html>
+

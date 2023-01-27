@@ -5,6 +5,8 @@
     <title>Title</title>
 </head>
 <body>
+Hello {{ username }}
+
 {% if operation_buy %}
 {{ user_currency_1 }} in {{ user_currency_2 }}: {{operation_buy}} for buy, {{operation_sale}} for sale
 {% endif %}
@@ -13,10 +15,7 @@
 <form action="/currency" method="post">
   <label for="bank">Bank:</label><br>
   <select id="bank" name="bank">
-    <option value="A-bank">A-bank</option>
     <option value="Privatbank">Privatbank</option>
-    <option value="Monobank">Monobank</option>
-    <option value="Oshadbank">OshadBank</option>
   </select><br>
 
   <label for="currency_1">Base currency:</label><br>
@@ -24,7 +23,10 @@
     <option value="UAH">UAH</option>
     <option value="EUR">EUR</option>
     <option value="USD">USD</option>
-    <option value="GPB">GPB</option>
+    <option value="GBP">GPB</option>
+    <option value="CZK">CZK</option>
+    <option value="CHF">CHF</option>
+    <option value="PLN">PLN</option>
   </select><br>
 
   <label for="currency_2">Exchanger currency:</label><br>
@@ -32,7 +34,10 @@
     <option value="UAH">UAH</option>
     <option value="EUR">EUR</option>
     <option value="USD">USD</option>
-    <option value="GPB">GPB</option>
+    <option value="GBP">GPB</option>
+    <option value="CZK">CZK</option>
+    <option value="CHF">CHF</option>
+    <option value="PLN">PLN</option>
   </select><br>
 
   <label for="date">Date:</label><br>
