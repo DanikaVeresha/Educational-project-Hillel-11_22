@@ -19,5 +19,20 @@ class User(Base):
         self.sale_rate = sale_rate
 
     def __repr__(self):
-        return f'<User {self.name!r}>'
+        return f'<User {self.bank!r}>'
 
+
+class Users(Base):
+    __tablename__ = "users"
+    id = Column(Integer, primary_key=True, unique=True)
+    username = Column(String(50))
+    password = Column(String(120))
+    email = Column(String(120))
+
+    def __init__(self, username, password, email):
+        self.username = username
+        self.password = password
+        self.email = email
+
+    def __repr__(self):
+        return f'<User {self.username!r}>'

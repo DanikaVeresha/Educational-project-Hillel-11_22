@@ -34,12 +34,12 @@ def login_user():
                                        firstuser=firstuser)
         except AttributeError:
             return render_template('login_form.html',
-                                   firstuser='No user found')
+                                   firstuser='No user found, please first register in our database')
     else:
         if 'username' in flask_session:
             return render_template('login_form.html',
                                    firstuser=flask_session['username'])
-        return 'Hello, you are logged out as an unknown user, please first register in our database'
+        return 'Hello, you are logged in as an unknown user, first register in our database'
 
 
 @app.route('/logout', methods=['GET'])
@@ -47,7 +47,7 @@ def logout_user():
     get_bank_task()
     if 'username' in flask_session:
         return 'Operation done'
-    return 'Hello, you are logged out as an unknown user, please first register in our database'
+    return 'Hello, you are logged in as an unknown user, first register in our database'
 
 
 @app.route('/ok', methods=['GET'])
@@ -116,11 +116,12 @@ def currency_convert():
         if 'username' in flask_session:
             return render_template('data_form.html',
                                    username=flask_session['username'])
-        return 'Hello, you are logged out as an unknown user, please first register in our database'
+        return 'Hello, you are logged in as an unknown user, first register in our database'
 
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000, debug=True)
+
 
 
 

@@ -1,4 +1,5 @@
 import sqlite3
+from flask import request
 
 
 class DataBase:
@@ -15,7 +16,6 @@ class DataBase:
 
 if __name__ == '__main__':
     db = 'currency_pair.db'
-    
 
 
 
